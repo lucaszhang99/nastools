@@ -31,7 +31,8 @@ from app.message import Message, MessageCenter
 from app.rss import Rss
 from app.rsschecker import RssChecker
 from app.scheduler import stop_scheduler
-from app.sites import Sites, SiteUserInfo, SiteSignin, SiteCookie
+from app.sites import Sites
+from app.sites.sitecookie import SiteCookie
 from app.subscribe import Subscribe
 from app.subtitle import Subtitle
 from app.sync import Sync, stop_monitor
@@ -272,7 +273,7 @@ class WebAction:
         commands = {
             "/ptr": {"func": TorrentRemover().auto_remove_torrents, "desp": "删种"},
             "/ptt": {"func": Downloader().transfer, "desp": "下载文件转移"},
-            "/pts": {"func": SiteSignin().signin, "desp": "站点签到"},
+            "/pts": {"func": Sites().signin, "desp": "站点签到"},
             "/rst": {"func": Sync().transfer_all_sync, "desp": "目录同步"},
             "/rss": {"func": Rss().rssdownload, "desp": "RSS订阅"},
             "/db": {"func": DoubanSync().sync, "desp": "豆瓣同步"},
@@ -418,7 +419,7 @@ class WebAction:
         commands = {
             "autoremovetorrents": TorrentRemover().auto_remove_torrents,
             "pttransfer": Downloader().transfer,
-            "ptsignin": SiteSignin().signin,
+            "ptsignin": Sites().signin,
             "sync": Sync().transfer_all_sync,
             "rssdownload": Rss().rssdownload,
             "douban": DoubanSync().sync,
@@ -2197,7 +2198,7 @@ class WebAction:
         resp = {"code": 0}
 
         resp.update(
-            {"dataset": SiteUserInfo().get_pt_site_activity_history(data["name"])})
+            {"dataset": Sites().get_pt_site_activity_history(data["name"])})
         return resp
 
     @staticmethod
@@ -2211,7 +2212,8 @@ class WebAction:
             return {"code": 1, "msg": "查询参数错误"}
 
         resp = {"code": 0}
-        _, _, site, upload, download = SiteUserInfo().get_pt_site_statistics_history(data["days"] + 1)
+        _, _, site, upload, download = Sites(
+        ).get_pt_site_statistics_history(data["days"] + 1)
 
         # 调整为dataset组织数据
         dataset = [["site", "upload", "download"]]
@@ -2232,7 +2234,7 @@ class WebAction:
 
         resp = {"code": 0}
 
-        seeding_info = SiteUserInfo().get_pt_site_seeding_info(
+        seeding_info = Sites().get_pt_site_seeding_info(
             data["name"]).get("seeding_info", [])
         # 调整为dataset组织数据
         dataset = [["seeders", "size"]]
@@ -3887,7 +3889,8 @@ class WebAction:
         查询所有过滤规则
         """
         RuleGroups = Filter().get_rule_infos()
-        sql_file = os.path.join(Config().get_script_path(), "init_filter.sql")
+        sql_file = os.path.join(Config().get_root_path(),
+                                "config", "init_filter.sql")
         with open(sql_file, "r", encoding="utf-8") as f:
             sql_list = f.read().split(';\n')
             Init_RuleGroups = []
@@ -4381,7 +4384,7 @@ class WebAction:
         sort_by = data.get("sort_by")
         sort_on = data.get("sort_on")
         site_hash = data.get("site_hash")
-        statistics = SiteUserInfo().get_site_user_statistics(sites=sites, encoding=encoding)
+        statistics = Sites().get_site_user_statistics(sites=sites, encoding=encoding)
         if sort_by and sort_on in ["asc", "desc"]:
             if sort_on == "asc":
                 statistics.sort(key=lambda x: x[sort_by])
