@@ -21,14 +21,12 @@ class Slack(_IMessageClient):
     _interactive = False
     _ds_url = None
     _service = None
-    _channel = None
     _client = None
 
     def __init__(self, config):
         self._config = Config()
         self._client_config = config
         self._interactive = config.get("interactive")
-        self._channel = config.get("channel") or "全体"
         self.init_config()
 
     def init_config(self):
@@ -256,7 +254,7 @@ class Slack(_IMessageClient):
                 if conversation_id:
                     break
                 for channel in result["channels"]:
-                    if channel.get("name") == self._channel:
+                    if channel.get("name") == "全体":
                         conversation_id = channel.get("id")
                         break
         except SlackApiError as e:

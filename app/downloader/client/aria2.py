@@ -159,9 +159,3 @@ class Aria2(_IDownloadClient):
                 'progress': progress
             })
         return DispTorrents
-
-    def set_speed_limit(self, **kwargs):
-        """
-        设置速度限制
-        """
-        pass

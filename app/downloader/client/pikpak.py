@@ -145,9 +145,3 @@ class PikPak(_IDownloadClient):
                 'noprogress': True
             })
         return DispTorrents
-
-    def set_speed_limit(self, **kwargs):
-        """
-        设置速度限制
-        """
-        pass

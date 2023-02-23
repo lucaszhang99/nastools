@@ -23,14 +23,13 @@ from app.brushtask import BrushTask
 from app.conf import ModuleConf, SystemConfig
 from app.downloader import Downloader
 from app.filter import Filter
-from app.helper import SecurityHelper, MetaHelper, ChromeHelper, ThreadHelper
+from app.helper import SecurityHelper, MetaHelper, ChromeHelper
 from app.indexer import Indexer
 from app.media.meta import MetaInfo
 from app.mediaserver import WebhookEvent
 from app.message import Message
 from app.rsschecker import RssChecker
 from app.sites import Sites
-from app.speedlimiter import SpeedLimiter
 from app.subscribe import Subscribe
 from app.sync import Sync
 from app.torrentremover import TorrentRemover
@@ -402,8 +401,6 @@ def recommend():
     PersonId = request.args.get("personid") or ""
     Keyword = request.args.get("keyword") or ""
     Source = request.args.get("source") or ""
-    FilterKey = request.args.get("filter") or ""
-    Params = json.loads(request.args.get("params")) if request.args.get("params") else {}
     return render_template("discovery/recommend.html",
                            Type=Type,
                            SubType=SubType,
@@ -414,10 +411,7 @@ def recommend():
                            PersonId=PersonId,
                            SubTitle=SubTitle,
                            Keyword=Keyword,
-                           Source=Source,
-                           Filter=FilterKey,
-                           FilterConf=ModuleConf.DISCOVER_FILTER_CONF.get(FilterKey) if FilterKey else {},
-                           Params=Params)
+                           Source=Source)
 
 
 # 推荐页面
@@ -435,9 +429,7 @@ def douban_movie():
     return render_template("discovery/recommend.html",
                            Type="DOUBANTAG",
                            SubType="MOV",
-                           Title="豆瓣电影",
-                           Filter="douban_movie",
-                           FilterConf=ModuleConf.DISCOVER_FILTER_CONF.get('douban_movie'))
+                           Title="豆瓣电影")
 
 
 # 豆瓣电视剧
@@ -447,9 +439,7 @@ def douban_tv():
     return render_template("discovery/recommend.html",
                            Type="DOUBANTAG",
                            SubType="TV",
-                           Title="豆瓣电视剧",
-                           Filter="douban_tv",
-                           FilterConf=ModuleConf.DISCOVER_FILTER_CONF.get('douban_tv'))
+                           Title="豆瓣电视剧")
 
 
 @App.route('/tmdb_movie', methods=['POST', 'GET'])
@@ -458,9 +448,7 @@ def tmdb_movie():
     return render_template("discovery/recommend.html",
                            Type="DISCOVER",
                            SubType="MOV",
-                           Title="TMDB电影",
-                           Filter="tmdb_movie",
-                           FilterConf=ModuleConf.DISCOVER_FILTER_CONF.get('tmdb_movie'))
+                           Title="TMDB电影")
 
 
 @App.route('/tmdb_tv', methods=['POST', 'GET'])
@@ -469,9 +457,7 @@ def tmdb_tv():
     return render_template("discovery/recommend.html",
                            Type="DISCOVER",
                            SubType="TV",
-                           Title="TMDB电视剧",
-                           Filter="tmdb_tv",
-                           FilterConf=ModuleConf.DISCOVER_FILTER_CONF.get('tmdb_tv'))
+                           Title="TMDB电视剧")
 
 
 # Bangumi每日放送
@@ -1031,7 +1017,6 @@ def douban():
 def downloader():
     return render_template("setting/downloader.html",
                            Config=Config().get_config(),
-                           SpeedLimitConf=SystemConfig().get_system_config("SpeedLimit") or {},
                            DownloaderConf=ModuleConf.DOWNLOADER_CONF)
 
 
@@ -1319,12 +1304,11 @@ def plex_webhook():
         return '不允许的IP地址请求'
     request_json = json.loads(request.form.get('payload', {}))
     log.debug("收到Plex Webhook报文：%s" % str(request_json))
-    ThreadHelper().start_thread(WebhookEvent().plex_action, (request_json,))
-    ThreadHelper().start_thread(SpeedLimiter().plex_action, (request_json,))
+    WebhookEvent().plex_action(request_json)
     return 'Ok'
 
 
-# Jellyfin Webhook
+# Emby Webhook
 @App.route('/jellyfin', methods=['POST'])
 def jellyfin_webhook():
     if not SecurityHelper().check_mediaserver_ip(request.remote_addr):
@@ -1332,8 +1316,7 @@ def jellyfin_webhook():
         return '不允许的IP地址请求'
     request_json = request.get_json()
     log.debug("收到Jellyfin Webhook报文：%s" % str(request_json))
-    ThreadHelper().start_thread(WebhookEvent().jellyfin_action, (request_json,))
-    ThreadHelper().start_thread(SpeedLimiter().jellyfin_action, (request_json,))
+    WebhookEvent().jellyfin_action(request_json)
     return 'Ok'
 
 
@@ -1345,8 +1328,7 @@ def emby_webhook():
         return '不允许的IP地址请求'
     request_json = json.loads(request.form.get('data', {}))
     log.debug("收到Emby Webhook报文：%s" % str(request_json))
-    ThreadHelper().start_thread(WebhookEvent().emby_action, (request_json,))
-    ThreadHelper().start_thread(SpeedLimiter().emby_action, (request_json,))
+    WebhookEvent().emby_action(request_json)
     return 'Ok'
 
 

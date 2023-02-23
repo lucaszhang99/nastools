@@ -7,9 +7,9 @@ from config import Config
 class _IDownloadClient(metaclass=ABCMeta):
 
     @abstractmethod
-    def match(self, ctype):
+    def init_config(self):
         """
-        匹配实例
+        初始化配置
         """
         pass
 
@@ -141,12 +141,5 @@ class _IDownloadClient(metaclass=ABCMeta):
     def get_downloading_progress(self):
         """
         获取下载进度
-        """
-        pass
-
-    @abstractmethod
-    def set_speed_limit(self, **kwargs):
-        """
-        设置速度限制
         """
         pass

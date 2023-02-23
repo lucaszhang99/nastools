@@ -4,13 +4,6 @@ from abc import ABCMeta, abstractmethod
 class _IMediaClient(metaclass=ABCMeta):
 
     @abstractmethod
-    def match(self, ctype):
-        """
-        匹配实例
-        """
-        pass
-
-    @abstractmethod
     def get_status(self):
         """
         检查连通性
@@ -97,12 +90,5 @@ class _IMediaClient(metaclass=ABCMeta):
         """
         获取媒体库中的所有媒体
         :param parent: 上一级的ID
-        """
-        pass
-
-    @abstractmethod
-    def get_playing_sessions(self):
-        """
-        获取正在播放的会话
         """
         pass

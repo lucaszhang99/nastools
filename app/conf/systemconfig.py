@@ -16,9 +16,7 @@ class SystemConfig:
         # 自动获取Cookie的用户信息
         "CookieUserInfo": {},
         # 用户自定义CSS/JavsScript
-        "CustomScript": {},
-        # 播放限速设置
-        "SpeedLimit": {}
+        "CustomScript": {}
     }
 
     def __init__(self):

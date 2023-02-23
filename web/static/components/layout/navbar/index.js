@@ -662,15 +662,6 @@ export class LayoutNavbar extends CustomElement {
         .theme-light .lit-navbar {
           background-color: rgb(231, 235, 239, 0.5);
         }
-        
-        .lit-navbar-logo {
-          height:3rem;
-          width:auto;
-        }
-
-        .theme-dark .lit-navbar-logo {
-          filter: invert(1) grayscale(100%) brightness(200%);
-        }
 
         /* 屏蔽lg以下顶栏 */
         @media (max-width: 992px) {
@@ -717,7 +708,7 @@ export class LayoutNavbar extends CustomElement {
           <div class="d-flex flex-row flex-grow-1 lit-navbar-hide-scrollbar">
             <div class="d-flex flex-column flex-grow-1">
               <h1 class="mt-3" style="text-align:center;">
-                <img src="../static/img/logo-blue.png" alt="NAStool" class="lit-navbar-logo">
+                <img src="../static/img/logo-blue.png" alt="NAStool" style="height:3rem;width:auto;">
               </h1>
               <div class="accordion px-2 py-2 flex-grow-1">
                 ${navbar_list.map((item, index) => ( html`

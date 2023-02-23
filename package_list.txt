@@ -16,4 +16,3 @@ inotify-tools
 chromium-chromedriver
 npm
 dumb-init
-ffmpeg

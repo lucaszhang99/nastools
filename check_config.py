@@ -275,8 +275,7 @@ def update_config():
                 "thumb": True,
                 "season_poster": True,
                 "season_banner": True,
-                "season_thumb": True,
-                "episode_thumb": False}
+                "season_thumb": True}
         }
         overwrite_cofig = True
 
